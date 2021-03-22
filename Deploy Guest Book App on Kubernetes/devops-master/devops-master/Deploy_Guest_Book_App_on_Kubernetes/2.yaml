@@ -1,0 +1,29 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-slave
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: redis-slave
+      tier: back-end
+  template:
+    metadata:
+      labels:
+        app: redis-slave
+        tier: back-end
+    spec:
+      containers:
+        - name: slave-redis-xfusion
+          image: gcr.io/google_samples/gb-redisslave:v3
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "100m"
+          env:
+            - name: GET_HOSTS_FROM
+              value: dns
+          ports:
+            - containerPort: 6379

@@ -1,0 +1,9 @@
+
+
+
+
+
+
+
+
+docker run --name=beta -it -v  /opt/sysops:/usr/src  ubuntu:latest

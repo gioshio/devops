@@ -1,0 +1,91 @@
+
+Nautilus developers are actively working on one of the project repositories, /usr/src/kodekloudrepos/cluster. 
+They recently decided to implement some new features in the application, and they want to maintain those 
+new changes in a separate branch. Below are the requirements that have been shared with the DevOps team:
+
+
+On Storage server in Stratos DC create a new branch xfusioncorp_cluster 
+from master branch in /usr/src/kodekloudrepos/cluster git repo.
+
+Please do not try to make any changes in code.
+
+
+
+connect to  ststore  server:
+============================
+thor@jump_host /$ ssh -l  natasha ststor01
+The authenticity of host 'ststor01 (172.16.238.15)' can't be established.
+ECDSA key fingerprint is SHA256:wqSnjBY7ZbmEJti9wRAQgptAdODVAjx+OSME8qHVyNM.
+ECDSA key fingerprint is MD5:97:6f:ee:11:3e:45:44:a8:88:66:26:4a:fa:2e:fa:94.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added 'ststor01,172.16.238.15' (ECDSA) to the list of known hosts.
+natasha@ststor01's password:
+
+[natasha@ststor01 ~]$ sudo -i
+
+We trust you have received the usual lecture from the local System
+Administrator. It usually boils down to these three things:
+
+    #1) Respect the privacy of others.
+    #2) Think before you type.
+    #3) With great power comes great responsibility.
+
+[sudo] password for natasha:
+
+go to  GIT repository
+================
+
+ [root@ststor01 ecommerce]# cd /usr/src/kodekloudrepos/ecommerce
+
+ we are switched on kodekloud_ecommerce branch
+
+ [root@ststor01 ecommerce]# git branch
+* kodekloud_ecommerce
+  master
+
+  [root@ststor01 ecommerce]# ls
+data.txt  info.txt
+
+switch to master branch:
+=====================
+[root@ststor01 ecommerce]#   git checkout master
+
+We are switched to 'master' branch:
+
+ [root@ststor01 demo]# git branch
+  kodekloud_ecommerce
+* master
+
+[root@ststor01 ecommerce# ls
+info.txt
+
+create a branch 'xfusioncorp_ecommerce'  from  master branch :
+=======================================================
+[root@ststor01 ecommerce]# git checkout -b xfusioncorp_ecommerce
+
+Switched to a new branch 'xfusioncorp_ecommerce'
+
+[root@ststor01 ecommerce]# ls
+info.txt
+
+[root@ststor01 ecommerce]# git branch
+  kodekloud_ecommerce
+  master
+* xfusioncorp_commerce
+
+[root@ststor01 ecommerce]# ls
+info.txt
+
+That's all !
+
+
+
+Is says in the description that the new branch should be from the master branch. 
+So first you need to go to the master branch with "git checkout master" and then 
+do "git checkout -b xfusioncorp_ecommerce master". See if that work.
+
+
+First perform "git checkout master" and then perform "git checkout -b xfusioncorp_ecommerce" , 
+Click the checkbox on the left to retry.
+You can also do "git branch xfusioncorp_ecommerce master" to create it from master. 
+Otherwise, it will create from another branch which is currently checked out.

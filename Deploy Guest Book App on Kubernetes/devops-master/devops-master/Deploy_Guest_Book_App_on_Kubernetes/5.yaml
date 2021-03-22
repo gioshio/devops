@@ -1,0 +1,29 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: guestbook
+      tier: front-end
+  template:
+    metadata:
+      labels:
+        app: guestbook
+        tier: front-end
+    spec:
+      containers:
+        - name: php-redis-xfusion
+          image: gcr.io/google-samples/gb-frontend:v4
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "100m"
+          env:
+            - name: GET_HOSTS_FROM
+              value: dns
+          ports:
+            - containerPort: 80

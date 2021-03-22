@@ -1,0 +1,47 @@
+kubectl create namespace node-deployment-datacenter
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-deployment-datacenter
+  namespace: node-namespace-datacenter
+  labels:
+    name: webdep
+    app: demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: webpod
+      app: demo
+  template:
+    metadata:
+      name: webpod
+      labels:
+        name: webpod
+        app: demo
+    spec:
+      containers:
+        - name: node-container-datacenter
+          image: gcr.io/kodekloud/centos-ssh-enabled:node
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-service-datacenter
+  namespace: node-namespace-datacenter
+spec:
+  type: NodePort
+  selector:
+    name: webpod
+    app: demo
+  ports:
+      # By default and for convenience, the `targetPort` is set to the same value as the `port` field.
+    - port: 80
+      targetPort: 8080
+      # Optional field
+      # By default and for convenience, the Kubernetes control plane will allocate a port from a range (default: 30000-32767)
+      nodePort: 30012
