@@ -1,4 +1,4 @@
-kubectl create namespace xfusion
+#kubectl create namespace xfusion
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -34,8 +34,8 @@ spec:
           name: log-volume 
 
 
-kubectl exec pod/time-check -n xfusion -- ls /opt/data/time
-kubectl exec pod/time-check -n xfusion -- ls /opt/data/time
+#kubectl exec pod/time-check -n xfusion -- ls /opt/data/time
+#kubectl exec pod/time-check -n xfusion -- ls /opt/data/time
 
 
 
