@@ -1,0 +1,38 @@
+# "kubectl set image deployment httpd-deploy httpd=httpd:2.4.43 -n datacenter --record" or 
+# edit your yaml and do "kubectl replace -f new-shio.yml -n datacenter --record" or 
+# change image with "kubectl edit deployment httpd-deploy -n datacenter --record". Lets try again.
+
+
+# step 1: create a deployment - that's fine
+# Step 2: upgrade the deployment: "kubectl --record deployment.apps/httpd-deploy set image deployment.v1.apps/httpd-deploy httpd= httpd:2.4.43 -n datacenter". 
+# Reference: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#updating-a-deployment
+
+# Step 3: Roll back the update Look at this guide: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-back-a-deployment
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpd-deploy
+  namespace: devops
+spec:
+  replicas: 7
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 2
+  selector:
+    matchLabels:
+      app: httpd-deploy
+  template:
+    metadata:
+      labels:
+        app: httpd-deploy
+    spec:
+      containers:
+      - image: httpd:2.4.25
+        name: httpd
+
+
+
