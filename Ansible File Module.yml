@@ -13,8 +13,13 @@
 
 # Note: Validation will try to run playbook using command ansible-playbook -i inventory playbook.yml, 
 # so please make sure playbook works this way, without passing any extra arguments.
+# ansible all -a "ls -lsd /tmp/web.txt" -i inventory
 
+stapp01 ansible_host=172.16.238.10 ansible_ssh_pass=Ir0nM@n ansible_user=tony
+stapp02 ansible_host=172.16.238.11 ansible_ssh_pass=Am3ric@ ansible_user=steve
+stapp03 ansible_host=172.16.238.12 ansible_ssh_pass=BigGr33n ansible_user=banner
 
+---
 - name: Create file in all appservers
   hosts: stapp01, stapp02, stapp03
   become: yes
@@ -26,3 +31,4 @@
         group: "{{ ansible_user }}"
         mode: "0655"
         state: touch
+
