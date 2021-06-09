@@ -1,0 +1,71 @@
+Managing Jinja2 Templates using Ansible
+
+# One of the Nautilus DevOps team members is working to develop a role for httpd installation and configuration. 
+# Work is almost completed, however there is a requirement to add a jinja2 template for index.html file. Additionally, 
+# the relevant task needs to be added inside the role. The inventory file ~/ansible/inventory is already present 
+# on jump host that can be used. Complete the task as per details mentioned below:
+
+
+# a. Update ~/ansible/playbook.yml playbook to run the httpd role on App Server 2.
+
+# b. Create a jinja2 template index.html.j2 under /home/thor/ansible/role/httpd/templates/ and add a line This file was created using 
+# Ansible on <respective server> (for example This file was created using Ansible on stapp01 in case of App Server 1). Also please make 
+# sure not to hard code the server name inside the template. Instead, use inventory_hostname variable to fetch the correct value.
+
+# c. Add a task inside /home/thor/ansible/role/httpd/tasks/main.yml to copy this template on App Server 2 in /var/www/html/index.html. 
+# Also make sure that /var/www/html/index.html file permissions 0744.
+
+# d. The user/group owner of /var/www/html/index.html file must be respective sudo user of server (for example tony in case of stapp01).
+
+# Note: Validation will try to run playbook using command ansible-playbook -i inventory playbook.yml so please make sure playbook 
+# works this way, without passing any extra arguments.
+
+
+
+
+Solution
+First edit the file /home/thor/ansible/playbook.yml to include the required host e.g. stapp03
+---
+- hosts: stapp03
+  become: yes
+  roles:
+    - role/httpd
+Create a Jinja2 template file /home/thor/ansible/role/httpd/templates/index.html.j2 with the following content:
+This file was created using Ansible on {{ ansible_hostname }}
+Edit the file /home/thor/ansible/role/httpd/tasks/main.yml to add a task to copy the template to /var/www/html on the required host
+
+Before:
+
+---
+#task file for role/test
+- name: install the latest version of httpd
+  yum:
+    name: httpd
+    state: latest
+- name: Start service httpd
+  service:
+    name: httpd
+    state: started
+
+After:
+
+---
+#task file for role/test
+- name: install the latest version of httpd
+  yum:
+    name: httpd
+    state: latest
+- name: Start service httpd
+  service:
+    name: httpd
+    state: started
+- name: Use Jinja2 template to generate index.html
+  template:
+    src: /home/thor/ansible/role/httpd/templates/index.html.j2
+    dest: /var/www/html/index.html
+    mode: "0655"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+Verification
+Run ansible-playbook -i inventory playbook.yml on the /home/thor/ansible directory. The playbook should run without any errors
+Then check that /var/www/html/index.html has be written according to the template by running ansible stapp03 -a "cat /var/www/html/index.html" -i inventory (substitute stapp03 with the corresponding host)
