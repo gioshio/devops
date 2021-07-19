@@ -1,0 +1,25 @@
+Write a Docker File
+
+As per recent requirements shared by the Nautilus application development team, they need custom
+images created for one of their projects. Several of the initial testing requirements are 
+already been shared with DevOps team. Therefore, create a docker file /opt/docker/Dockerfile 
+(please keep D capital of Dockerfile) on App server 2 in Stratos DC and configure to build an image with the following requirements:
+
+a. Use ubuntu as the base image.
+
+b. Install apache2 and configure it to work on 6400 port. (do not update any other Apache configuration settings like document root etc).
+
+FROM ubuntu
+RUN apt-get update
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get install apache2 -y
+RUN sed -i "s/80/6400/g" /etc/apache2/ports.conf
+EXPOSE 5003
+CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND", "-k", "start"]
+
+
+First try to build an image using this Dockerfile using sudo docker build -t my_image .
+You should see that the image gets built successfully with any errors
+Next is try to run the image as sudo docker run --name my_srv -p 6400:6400 -d my_image (Change 5003 to the port asked in the question). It should run without any errors.
+Lastly test using curl as curl http://localhost:6400. You should a HTML content returned from the container.
+ 

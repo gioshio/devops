@@ -1,0 +1,67 @@
+Ansible Lineinfile Module
+
+
+# The Nautilus DevOps team want to install and set up a simple httpd web server on all app servers in Stratos DC. 
+# They also want to deploy a sample web page using Ansible only. Therefore, 
+# prepare the required playbook to complete this task. 
+# Find more details about the task below.
+
+
+# We already have an inventory file under /home/thor/ansible on jump host. 
+# Create a playbook.yml under /home/thor/ansible on jump host itself.
+
+# Using the playbook install httpd web server on all app servers, 
+# and make sure its service is up and running.
+
+# Create a file /var/www/html/index.html with content:
+
+# This is a Nautilus sample file, created using Ansible!
+
+# Using lineinfile Ansible module add some more content in /var/www/html/index.html file. Below is the content:
+# Welcome to Nautilus Group!
+
+# Also make sure this new line is added at the top of the file.
+
+# The /var/www/html/index.html file's user and group owner should be apache on all app servers.
+
+# The /var/www/html/index.html file's permissions should be 0644 on all app servers.
+
+# Note: Validation will try to run playbook using command ansible-playbook -i inventory playbook.yml 
+# so please make sure playbook works this way, without passing any extra arguments.
+
+
+
+# Step 1: Simply save this file as playbook.yml in the required folder
+# Step 2: Run `ansible-playbook -i inventory playbook.yml`
+# Step 3: Verify: Check that the files have been updated correctly by running
+#         ansible all -a "ls -ltr /var/www/html/" -i inventory
+#         ansible all -a "cat /var/www/html/index.html" -i inventory
+#
+# For tips on getting better at Ansible tasks, check out the README.md
+# in this folder
+#
+---
+- name: Install httpd and setup index.html
+  hosts: stapp01, stapp02, stapp03
+  become: yes
+  tasks:
+    - name: Install httpd
+      package:
+        name: httpd
+        state: present
+    - name: Start service httpd, if not started
+      service:
+        name: httpd
+        state: started
+    - name: Add content in index.html. Create file if it does not exist and set file attributes
+      copy:
+        dest: /var/www/html/index.html
+        content: This is a Nautilus sample file, created using Ansible!
+        mode: "0655"
+        owner: apache
+        group: apache
+    - name: Update content in index.html
+      lineinfile:
+        path: /var/www/html/index.html
+        insertbefore: BOF
+        line: Welcome to xFusionCorp Industries!

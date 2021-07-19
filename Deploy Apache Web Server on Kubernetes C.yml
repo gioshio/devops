@@ -1,0 +1,58 @@
+Deploy Apache Web Server on Kubernetes CLuster
+
+
+
+# There is an application that needs to be deployed on Kubernetes cluster under Apache web server. 
+# The Nautilus application development team has asked the DevOps team to deploy it. We need to develop a template as per requirements mentioned below:
+
+
+# Create a namespace named as httpd-namespace-devops.
+
+# Create a service named as httpd-service-devops under same namespace, targetPort should be 80 and nodePort should be 30004.
+
+# Create a deployment named as httpd-deployment-devops under the same namespace as mentioned above. 
+# Use image httpd with latest tag only and remember to mention tag i.e httpd:latest, 
+# and container name should be httpd-container-devops. And make sure replicas counts are 4.
+
+# Set labels app to httpd_app_devops.
+
+# Note: The kubectl utility on jump_host has been configured to work with the kubernetes cluster.
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name:  httpd-service-devops
+  namespace:  httpd-namespace-devops
+spec:
+  type: NodePort
+  selector:
+    app: httpd_app_devops
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30004
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpd-deployment-devops
+  namespace: httpd-namespace-devops
+  labels:
+    app: httpd_app_devops
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: httpd_app_devops
+  template:
+    metadata:
+      labels:
+        app: httpd_app_devops
+    spec:
+      containers:
+        - name: httpd-container-devops
+          image: httpd:latest
+          ports:
+            - containerPort: 80

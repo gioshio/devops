@@ -1,0 +1,64 @@
+# The Nautilus DevOps teams is planning to set up a Nagios monitoring tool to monitor some applications, services etc. 
+# They are planning to deploy it on Kubernetes cluster. Below you can find more details.
+
+
+# 1) Create a deployment nagios-deployment for Nagios core. 
+#    The container name must be nagios-container and it must use jasonrivers/nagios image.
+
+# 2) Create a user and password for the Nagios core web interface, user must be xFusionCorp and password must be LQfKeWWxWD. 
+#   (you can manually perform this step after deployment)
+
+# 3) Create a service nagios-service for Nagios which must be of targetPort type. Port must be 80 and nodePort must be 30008.
+
+# You can use any labels as per your choice.
+
+# Note: The kubectl on jump_host has been configured to work with the kubernetes cluster.
+
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nagios-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nagios-core
+  template:
+    metadata:
+      labels:
+        app: nagios-core
+    spec:
+      containers:
+        - name: nagios-container
+          image: jasonrivers/nagios
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nagios-service
+spec:
+  type: NodePort
+  selector:
+    app: nagios-core
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30008
+
+---
+
+# Run below command to login on pod & open shell 
+
+#     kubectl exec -it (pod name) -- /bin/bash
+
+
+# As per the task set username & password for Nagios core web interface
+
+#        (Refer your task username & password)
+
+#     htpasswd /opt/nagios/etc/htpasswd.users xFusionCorp
+
+
